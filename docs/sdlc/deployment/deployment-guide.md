@@ -7,7 +7,11 @@ Pushes to `main` run `.github/workflows/deploy.yml`, which builds the API image 
 <!-- sdlc:auto:end how-it-deploys -->
 
 <!-- sdlc:auto:start environments -->
-_No environments recorded._
+| Name | Service | Runtime | Scaling | Environment |
+|---|---|---|---|---|
+| Calculator SPA hosting | Amazon S3 + CloudFront | Static React 19 build | CDN edge, scales to public traffic automatically | dev |
+| Operational API | AWS App Runner | FastAPI 0.115 on Python (Uvicorn) | Managed autoscaling, min 1 instance | dev |
+| PostgreSQL | Amazon RDS for PostgreSQL | PostgreSQL 16 | Single small instance (provisioned, unused) | dev |
 <!-- sdlc:auto:end environments -->
 
 <!-- sdlc:auto:start live -->
@@ -15,5 +19,12 @@ _Not deployed yet._
 <!-- sdlc:auto:end live -->
 
 <!-- sdlc:auto:start topology -->
-_No deployment topology recorded._
+```mermaid
+graph LR
+  n_Calculator_SPA_hosting["Calculator SPA hosting<br/>Amazon S3 + CloudFront"]
+  n_Operational_API["Operational API<br/>AWS App Runner"]
+  n_PostgreSQL["PostgreSQL<br/>Amazon RDS for PostgreSQL"]
+  n_Calculator_SPA_hosting -->|"HTTPS"| n_Operational_API
+  n_Operational_API -->|"TCP/TLS"| n_PostgreSQL
+```
 <!-- sdlc:auto:end topology -->
